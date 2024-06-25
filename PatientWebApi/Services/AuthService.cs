@@ -12,12 +12,14 @@ namespace PatientWebApi.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<IdentityUser> _manager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthService(UserManager<IdentityUser> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
         {
             _manager = userManager;
             _configuration = configuration;
+            _roleManager = roleManager;
         }
 
         public async Task<bool> Register(LoginUser user)
@@ -65,6 +67,29 @@ namespace PatientWebApi.Services
 
             string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
             return tokenString;
+        }
+        public async Task<bool> CreateRole(string roleName)
+        {
+            if (await _roleManager.RoleExistsAsync(roleName))
+            {
+                return true;
+            }
+
+            var identityRole = new IdentityRole(roleName);
+            var result = await _roleManager.CreateAsync(identityRole);
+            return result.Succeeded;
+        }
+
+        public async Task<bool> AssignRoleToUser(string email, string roleName)
+        {
+            var user = await _manager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return false;
+            }
+
+            var result = await _manager.AddToRoleAsync(user, roleName);
+            return result.Succeeded;
         }
     }
 }

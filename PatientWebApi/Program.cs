@@ -43,8 +43,16 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value))
 };
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+});
 
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IPatientService, PatientService>();
 
 var app = builder.Build();
 

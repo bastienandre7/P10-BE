@@ -12,7 +12,7 @@ using PatientWebApi.Context;
 namespace PatientWebApi.Migrations
 {
     [DbContext(typeof(PatientDbContext))]
-    [Migration("20240604141408_Initial")]
+    [Migration("20240605134748_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,8 +224,11 @@ namespace PatientWebApi.Migrations
 
             modelBuilder.Entity("PatientWebApi.Models.Patient", b =>
                 {
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -233,6 +236,10 @@ namespace PatientWebApi.Migrations
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -246,7 +253,7 @@ namespace PatientWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("FirstName");
+                    b.HasKey("Id");
 
                     b.ToTable("Patients");
                 });

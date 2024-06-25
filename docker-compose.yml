@@ -1,0 +1,22 @@
+version: '3.4'
+
+networks:
+  backend:
+
+services:
+  PatientDb:
+    container_name: PatientDb
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=password@12345#
+    networks:
+        - backend
+  patientwebapi:
+    container_name: patient-api
+    image: ${DOCKER_REGISTRY-}patientwebapi
+    build:
+      context: .
+      dockerfile: PatientWebApi\Dockerfile
+    networks:
+      - backend
