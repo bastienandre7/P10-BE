@@ -22,6 +22,9 @@ namespace PatientWebApi.Services
             _roleManager = roleManager;
         }
 
+        public const string JWT_SECURITY_KEY = "yPkCqn4kSWLtaJwvN2jGzpQRyTZ3gdkt7FeBJP";
+        private const int JWT_TOKEN_VALIDITY_MINS = 20;
+
         public async Task<bool> Register(LoginUser user)
         {
             var identityUser = new IdentityUser
@@ -48,26 +51,32 @@ namespace PatientWebApi.Services
 
         public string GenerateTokenString(LoginUser user)
         {
-            IEnumerable<System.Security.Claims.Claim> claims = new List<Claim>
+            
+            var tokenExpiryTimeStamp = DateTime.Now.AddMinutes(JWT_TOKEN_VALIDITY_MINS);
+            var tokenKey = Encoding.ASCII.GetBytes(JWT_SECURITY_KEY);
+            var claimsIdentity = new ClaimsIdentity(new List<Claim>
+                {
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, "Admin")
+                });
+
+            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature);
+
+            var securityTokenDescriptor = new SecurityTokenDescriptor
             {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role,"Admin"),
+                Subject = claimsIdentity,
+                Expires = tokenExpiryTimeStamp,
+                SigningCredentials = signingCredentials
             };
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value));
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = jwtSecurityTokenHandler.CreateToken(securityTokenDescriptor);
+            var token = jwtSecurityTokenHandler.WriteToken(securityToken);
 
-            var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
-
-            var securityToken = new JwtSecurityToken(
-                claims:claims,
-                expires:DateTime.Now.AddMinutes(60),
-                issuer:_configuration.GetSection("Jwt:Issuer").Value,
-                audience: _configuration.GetSection("Jwt:Audience").Value,
-                signingCredentials:signingCred);
-
-            string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
-            return tokenString;
+            return token ;
         }
+
+
         public async Task<bool> CreateRole(string roleName)
         {
             if (await _roleManager.RoleExistsAsync(roleName))

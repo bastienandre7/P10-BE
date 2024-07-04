@@ -1,0 +1,81 @@
+﻿@page "/patientdetails/{Id:int}"
+@using Blazored.LocalStorage
+@inject HttpClient Http
+@inject ILocalStorageService LocalStorage
+@attribute [Authorize]
+
+<h1>Details du patient</h1>
+
+@if (patient == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div>
+        <p>Nom : @patient.LastName</p>
+        <p>Prénom : @patient.FirstName</p>
+        <p>Date de naissance : @patient.DateOfBirth</p>
+        <p>Genre : @patient.Gender</p>
+        <p>Adresse postale : @patient.Address</p>
+        <p>Numero de téléphone : @patient.PhoneNumber</p>
+    </div>
+    var EditPatientLink = $"editpatient/{patient.Id}";
+    <NavLink class="nav-link" href=@EditPatientLink>Modifier</NavLink>
+    <div>
+        <h2>Risque de diabète :</h2>
+        <p>@riskResult.RiskLevel</p>
+    </div>
+}
+
+@code {
+    private Patient patient;
+    private RiskResult riskResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Récupérer le token depuis le local storage
+            string token = await LocalStorage.GetItemAsStringAsync("authToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                token = token.Trim('"');
+                // Ajouter le jeton aux en-têtes des requêtes HTTP
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                // Appeler l'API pour obtenir les détails du patient
+                patient = await Http.GetFromJsonAsync<Patient>($"api/Patient/Find/{Id}");
+                riskResult = await Http.GetFromJsonAsync<RiskResult>($"api/Assessment/Find/{Id}");
+            }
+            else
+            {
+                // Gérer le cas où le token est absent
+                Console.WriteLine("Token is null or empty");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+    public class Patient
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string Gender { get; set; }
+        public string Address { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+    }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    public class RiskResult
+    {
+        public string RiskLevel { get; set; }
+    }
+}

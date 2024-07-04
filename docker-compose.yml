@@ -1,22 +1,46 @@
 version: '3.4'
 
-networks:
-  backend:
-
 services:
-  PatientDb:
-    container_name: PatientDb
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    environment:
-        - ACCEPT_EULA=Y
-        - SA_PASSWORD=password@12345#
-    networks:
-        - backend
+  blazorapplication:
+    image: ${DOCKER_REGISTRY-}blazorapplication
+    build:
+      context: .
+      dockerfile: BlazorApplication/Dockerfile
+    ports:
+      - "5000:80"
+ 
   patientwebapi:
-    container_name: patient-api
     image: ${DOCKER_REGISTRY-}patientwebapi
     build:
       context: .
-      dockerfile: PatientWebApi\Dockerfile
-    networks:
-      - backend
+      dockerfile: PatientWebApi/Dockerfile
+    ports:
+      - "5001:80"
+
+  patientnoteapi:
+    image: ${DOCKER_REGISTRY-}patientnoteapi
+    build:
+      context: .
+      dockerfile: PatientNoteApi/Dockerfile
+    ports:
+      - "5002:80"
+
+  diabetesriskapi:
+    image: ${DOCKER_REGISTRY-}diabetesriskapi
+    build:
+      context: .
+      dockerfile: DiabetesRiskApi/Dockerfile
+    ports:
+      - "5003:80"
+
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    ports:
+      - "5071:80"
+    depends_on:
+      - patientwebapi
+      - patientnoteapi
+      - diabetesriskapi

@@ -1,0 +1,63 @@
+﻿@page "/"
+@attribute [Authorize]
+@inject PatientService PatientService
+
+<h1>Liste des patients</h1>
+
+@if (patients == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patient in patients)
+            {
+                var detailLink = $"patientdetails/{patient.Id}";
+                var NoteLink = $"patientnotes/{patient.Id}";
+                <tr>
+                    <td>@patient.LastName</td>
+                    <td>@patient.FirstName</td>
+                    <td>
+                        <NavLink class="nav-link" href=@NoteLink>
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Note
+                        </NavLink>
+                        <NavLink class="nav-link" href=@detailLink>
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Details
+                        </NavLink>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <NavLink class="nav-link" href="addpatient">Ajouter un patient</NavLink>
+}
+
+@code {
+    private Patient[] patients;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPatients();
+    }
+
+    private async Task LoadPatients()
+    {
+        try
+        {
+            patients = await PatientService.GetPatientsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

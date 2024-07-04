@@ -1,0 +1,95 @@
+﻿@page "/editpatient/{Id:int}"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+<h3>Edit Patient</h3>
+
+@if (patient == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="@patient" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div>
+            <label for="lastName">Last Name: </label>
+            <InputText id="lastName" @bind-Value="patient.LastName" />
+        </div>
+        <div>
+            <label for="firstName">First Name: </label>
+            <InputText id="firstName" @bind-Value="patient.FirstName" />
+        </div>
+        <div>
+            <label for="dateOfBirth">Date of Birth: </label>
+            <InputDate id="dateOfBirth" @bind-Value="patient.DateOfBirth" />
+        </div>
+        <div>
+            <label for="gender">Gender: </label>
+            <InputText id="gender" @bind-Value="patient.Gender" />
+        </div>
+        <div>
+            <label for="address">Address: </label>
+            <InputText id="address" @bind-Value="patient.Address" />
+        </div>
+        <div>
+            <label for="phoneNumber">Phone Number: </label>
+            <InputText id="phoneNumber" @bind-Value="patient.PhoneNumber" />
+        </div>
+        <button type="submit">Save</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Patient patient;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Fetch the patient details from the API
+            patient = await Http.GetFromJsonAsync<Patient>($"api/Patient/Find/{Id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching patient: {ex.Message}");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            // Save the edited patient details
+            var response = await Http.PutAsJsonAsync($"api/Patient/Edit/{Id}", patient);
+            if (response.IsSuccessStatusCode)
+            {
+                Navigation.NavigateTo($"/patientdetails/{Id}");
+            }
+            else
+            {
+                Console.WriteLine("Error saving patient");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    public class Patient
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string Gender { get; set; }
+        public string Address { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+    }
+}

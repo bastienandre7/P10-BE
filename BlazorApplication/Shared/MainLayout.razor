@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+@using Blazored.LocalStorage
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+@inject AuthenticationStateProvider AuthStateProvider
+
+<PageTitle>MédiLaboSolutions</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <AuthorizeView>
+                <Authorized>
+                    <button @onclick="Logout">Se déconnecter</button>
+                </Authorized>
+                <NotAuthorized>
+                    <NavLink class="nav-link" href="login">Se connecter</NavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+
+    private async Task Logout()
+    {
+        await AuthService.Logout();
+        Navigation.NavigateTo("/login");
+    }
+}

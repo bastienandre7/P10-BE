@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationManifest ApplicationTypeName="MédiLaboSolutionsApplicationType"
+                     ApplicationTypeVersion="1.0.0"
+                     xmlns="http://schemas.microsoft.com/2011/01/fabric"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Parameters>
+  </Parameters>
+  <!-- Importez ServiceManifest à partir de ServicePackage. ServiceManifestName et ServiceManifestVersion 
+       doivent correspondre aux attributs Name et Version de l'élément ServiceManifest défini dans le 
+       fichier ServiceManifest.xml. -->
+  <DefaultServices>
+    <!-- La section ci-dessous crée des instances de types de service, quand une instance de ce 
+         type d'application est créée. Vous pouvez également créer une ou plusieurs instances du type de service via le 
+         module ServiceFabric PowerShell.
+
+         L'attribut ServiceTypeName ci-dessous doit correspondre au nom défini dans le fichier ServiceManifest.xml importé. -->
+  </DefaultServices>
+</ApplicationManifest>

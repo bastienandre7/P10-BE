@@ -1,0 +1,75 @@
+﻿@page "/login"
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Blazored.LocalStorage
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+@inject ILocalStorageService sessionStorage
+@inject IHttpContextAccessor httpContextAccessor
+
+<h3>Login</h3>
+
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="email">Email:</label>
+        <InputText id="email" @bind-Value="loginModel.Email" />
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <InputText id="password" @bind-Value="loginModel.Password" type="password" />
+    </div>
+    <button type="submit">Login</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@code {
+    private LoginUser loginModel = new LoginUser();
+    private string errorMessage;
+
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/Auth/Login", loginModel);
+            if (response.IsSuccessStatusCode)
+            {
+                var tokenResponse = await response.Content.ReadAsStringAsync();
+                if (tokenResponse != null)
+                {
+                    await AuthService.Login(tokenResponse);
+                    
+                    Navigation.NavigateTo("/");
+                }
+            }
+            else
+            {
+                errorMessage = "Login failed. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+           
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+
+    public class LoginUser
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
+    private class TokenResponse
+    {
+        public string Token { get; set; }
+    }
+}

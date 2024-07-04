@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PatientWebApi.Models;
 using PatientWebApi.Services;
@@ -35,13 +36,14 @@ namespace PatientWebApi.Controllers
             }
             if (await _authService.Login(user))
             {
-                var tokenString = _authService.GenerateTokenString(user);
-                var tokenResponse = new { Token = tokenString };
-                return Ok(tokenResponse);
+                var token = _authService.GenerateTokenString(user);
+                
+                return Ok(token);
             }
             return BadRequest();
         }
         [HttpPost("CreateRole")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateRole([FromBody] string roleName)
         {
             if (string.IsNullOrWhiteSpace(roleName))
@@ -60,6 +62,7 @@ namespace PatientWebApi.Controllers
             }
         }
         [HttpPost("AssignRole")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignRole([FromBody] UserRoleAssignment model)
         {
             if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.RoleName))

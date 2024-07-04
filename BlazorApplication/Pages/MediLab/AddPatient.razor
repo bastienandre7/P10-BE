@@ -1,0 +1,90 @@
+﻿@page "/addpatient"
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+<h3>Add Patient</h3>
+
+<EditForm Model="patientModel" OnValidSubmit="HandleAddPatient">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="firstName">First Name:</label>
+        <InputText id="firstName" @bind-Value="patientModel.FirstName" />
+    </div>
+    <div>
+        <label for="lastName">Last Name:</label>
+        <InputText id="lastName" @bind-Value="patientModel.LastName" />
+    </div>
+    <div>
+        <label for="dateOfBirth">Date of Birth:</label>
+        <InputDate id="dateOfBirth" @bind-Value="patientModel.DateOfBirth" />
+    </div>
+    <div>
+        <label for="gender">Gender:</label>
+        <InputText id="gender" @bind-Value="patientModel.Gender" />
+    </div>
+    <div>
+        <label for="address">Address:</label>
+        <InputText id="address" @bind-Value="patientModel.Address" />
+    </div>
+    <div>
+        <label for="phoneNumber">Phone Number:</label>
+        <InputText id="phoneNumber" @bind-Value="patientModel.PhoneNumber" />
+    </div>
+    <button type="submit">Add Patient</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success">@successMessage</div>
+}
+
+@code {
+    private Patient patientModel = new Patient();
+    private string errorMessage;
+    private string successMessage;
+
+    private async Task HandleAddPatient()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("/api/Patient/Create", patientModel);
+            if (response.IsSuccessStatusCode)
+            {
+                successMessage = "Patient added successfully.";
+                errorMessage = string.Empty;
+                Navigation.NavigateTo("/fetchdata");
+            }
+            else
+            {
+                errorMessage = "Failed to add patient. Please try again.";
+                successMessage = string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+            successMessage = string.Empty;
+        }
+    }
+
+    public class Patient
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string Gender { get; set; }
+        public string Address { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+    }
+}

@@ -1,0 +1,62 @@
+﻿@page "/patientnotes/{PatId:int}"
+@inject HttpClient Http
+@attribute [Authorize]
+
+<h3>Patient Notes</h3>
+
+@if (notes == null)
+{
+    <p>Loading...</p>
+}
+else if (notes.Length == 0)
+{
+    <p>No notes found for Patient ID: @PatId</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var note in notes)
+            {
+                <tr>
+                    <td>@note.Patient</td>
+                    <td>@note.Note</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <NavLink class="nav-link" href="@($"/addnote/{PatId}")">Ajouter une note</NavLink>
+}
+
+@code {
+    private PatientNotes[] notes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            notes = await Http.GetFromJsonAsync<PatientNotes[]>($"api/PatientNotes/GetByPatId/{PatId}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    public class PatientNotes
+    {
+        public string Id { get; set; }
+        public string patId { get; set; } = null!;
+        public string Patient { get; set; } = null!;
+        public string Note { get; set; } = null!;
+    }
+    [Parameter]
+    public int PatId { get; set; }
+ 
+}

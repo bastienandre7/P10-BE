@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PatientWebApi.Context;
@@ -8,9 +9,9 @@ using System.Data.Entity;
 
 namespace PatientWebApi.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
-
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
@@ -21,6 +22,7 @@ namespace PatientWebApi.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Create")]
         public async Task<IActionResult> Create(Patient patient)
         {
@@ -34,6 +36,7 @@ namespace PatientWebApi.Controllers
         }
 
         [HttpPut("Edit/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Email,Password")] Patient patient)
         {
             if (id != patient.Id || !ModelState.IsValid)
@@ -46,6 +49,7 @@ namespace PatientWebApi.Controllers
         }
 
         [HttpDelete("Delete/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -57,6 +61,7 @@ namespace PatientWebApi.Controllers
         }
 
         [HttpGet("Find/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Find(int? id)
         {
             var patient = await _patientService.FindPatientById(id);
@@ -69,6 +74,8 @@ namespace PatientWebApi.Controllers
         }
 
         [HttpGet("Index")]
+        [Authorize(Roles = "Admin")]
+
         public IActionResult Index()
         {
             var patients = _patientService.GetAllPatients();

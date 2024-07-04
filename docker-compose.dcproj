@@ -2,11 +2,8 @@
 <Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
-    <DockerTargetOS>Windows</DockerTargetOS>
-    <ProjectGuid>4d7b0bc7-305c-4cf7-8f57-9dfac8e24266</ProjectGuid>
-    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://{ServiceIPAddress}{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>patientwebapi</DockerServiceName>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <ProjectGuid>4365f5d2-3cf6-4bf6-aeb8-f4393ddf2d6e</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
