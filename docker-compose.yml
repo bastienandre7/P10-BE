@@ -14,8 +14,15 @@ services:
     build:
       context: .
       dockerfile: PatientWebApi/Dockerfile
+    environment:
+      - MSSQL_myuserapp_PASSWORD=P@ssw0rd123
+      - ConnectionStrings__DefaultConnection = Server=939358e74247b041e3ab7a058608c681c81820e09460aac4ffcbe51061741e41,1433;Database=PatientDb;User Id=myappuser;Password=P@ssword123;MultipleActiveResultSets=true;TrustServerCertificate=True
     ports:
       - "5001:80"
+    depends_on:
+      - sql-server-db
+    networks:
+      - myapp-network
 
   patientnoteapi:
     image: ${DOCKER_REGISTRY-}patientnoteapi
@@ -44,3 +51,24 @@ services:
       - patientwebapi
       - patientnoteapi
       - diabetesriskapi
+
+  sql-server-db:
+    image: mcr.microsoft.com/mssql/server:latest
+    environment:
+      SA_PASSWORD: "P@ssword123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - myapp-network
+    volumes:
+      - db-data:/var/opt/mssql
+    container_name: sql-server-db
+
+networks:
+  myapp-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local

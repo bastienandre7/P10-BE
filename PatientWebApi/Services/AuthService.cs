@@ -40,13 +40,23 @@ namespace PatientWebApi.Services
 
         public async Task<bool> Login(LoginUser user)
         {
-            var identityUser = await _manager.FindByEmailAsync(user.Email);
-            if(identityUser is null)
+            try
             {
-                return false;
-            }
+                var identityUser = await _manager.FindByEmailAsync(user.Email);
+                if (identityUser == null)
+                {
+                    return false;
+                }
 
-            return await _manager.CheckPasswordAsync(identityUser, user.Password);
+                return await _manager.CheckPasswordAsync(identityUser, user.Password);
+            }
+            catch (Exception ex)
+            {
+                
+
+                // Optionally, rethrow the exception or handle it as needed
+                throw;
+            }
         }
 
         public string GenerateTokenString(LoginUser user)

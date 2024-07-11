@@ -65,7 +65,7 @@ builder.Services.AddAuthentication(o =>
 builder.Services.AddScoped(sp =>
     new HttpClient
     {
-        BaseAddress = new Uri("http://localhost:5071/")
+        BaseAddress = new Uri("http://host.docker.internal:5071/")
     });
 
 builder.Services.AddHttpClient();
