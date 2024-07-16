@@ -15,27 +15,27 @@ else
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div>
-            <label for="lastName">Last Name: </label>
+            <label for="lastName">Nom: </label>
             <InputText id="lastName" @bind-Value="patient.LastName" />
         </div>
         <div>
-            <label for="firstName">First Name: </label>
+            <label for="firstName">Prénom: </label>
             <InputText id="firstName" @bind-Value="patient.FirstName" />
         </div>
         <div>
-            <label for="dateOfBirth">Date of Birth: </label>
+            <label for="dateOfBirth">Date de naissance: </label>
             <InputDate id="dateOfBirth" @bind-Value="patient.DateOfBirth" />
         </div>
         <div>
-            <label for="gender">Gender: </label>
+            <label for="gender">Genre: </label>
             <InputText id="gender" @bind-Value="patient.Gender" />
         </div>
         <div>
-            <label for="address">Address: </label>
+            <label for="address">Adresse: </label>
             <InputText id="address" @bind-Value="patient.Address" />
         </div>
         <div>
-            <label for="phoneNumber">Phone Number: </label>
+            <label for="phoneNumber">Numéro de téléphone: </label>
             <InputText id="phoneNumber" @bind-Value="patient.PhoneNumber" />
         </div>
         <button type="submit">Save</button>

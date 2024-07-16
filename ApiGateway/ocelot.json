@@ -38,11 +38,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Patient/Find/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "host.docker.internal",
-          "Port": 5002
+          "Port": 5001
         }
       ],
       "UpstreamPathTemplate": "/api/Patient/Find/{id}",
@@ -50,11 +50,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Patient/Index",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "host.docker.internal",
-          "Port": 5002
+          "Port": 5001
         }
       ],
       "UpstreamPathTemplate": "/api/Patient/Index",
@@ -94,7 +94,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "host.docker.internal",
-          "Port": 5003
+          "Port": 5002
         }
       ],
       "UpstreamPathTemplate": "/api/patientnotes/index",
@@ -106,7 +106,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "host.docker.internal",
-          "Port": 5003
+          "Port": 5002
         }
       ],
       "UpstreamPathTemplate": "/api/patientnotes/get/{id}",
@@ -118,7 +118,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "host.docker.internal",
-          "Port": 5003
+          "Port": 5002
         }
       ],
       "UpstreamPathTemplate": "/api/patientnotes/create",
@@ -130,7 +130,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "host.docker.internal",
-          "Port": 5003
+          "Port": 5002
         }
       ],
       "UpstreamPathTemplate": "/api/patientnotes/update/{id}",
@@ -142,7 +142,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "host.docker.internal",
-          "Port": 5003
+          "Port": 5002
         }
       ],
       "UpstreamPathTemplate": "/api/patientnotes/delete/{id}",
@@ -154,7 +154,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "host.docker.internal",
-          "Port": 5003
+          "Port": 5002
         }
       ],
       "UpstreamPathTemplate": "/api/patientnotes/getbypatid/{patId}",
@@ -166,7 +166,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "host.docker.internal",
-          "Port": 5004
+          "Port": 5003
         }
       ],
       "UpstreamPathTemplate": "/api/assessment/Find/{id}",

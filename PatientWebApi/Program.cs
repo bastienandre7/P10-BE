@@ -25,7 +25,7 @@ builder.Services.AddDbContext<PatientDbContext>(options => options.UseSqlServer(
             maxRetryDelay: TimeSpan.FromSeconds(30),
             errorNumbersToAdd: null);
     }));
-
+builder.Services.AddContextMigration();
 builder.Services.AddAuthentication();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>

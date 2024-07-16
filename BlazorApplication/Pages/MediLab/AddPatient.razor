@@ -12,27 +12,27 @@
     <ValidationSummary />
 
     <div>
-        <label for="firstName">First Name:</label>
+        <label for="firstName">Prénom:</label>
         <InputText id="firstName" @bind-Value="patientModel.FirstName" />
     </div>
     <div>
-        <label for="lastName">Last Name:</label>
+        <label for="lastName">Nom:</label>
         <InputText id="lastName" @bind-Value="patientModel.LastName" />
     </div>
     <div>
-        <label for="dateOfBirth">Date of Birth:</label>
+        <label for="dateOfBirth">Date de naissance:</label>
         <InputDate id="dateOfBirth" @bind-Value="patientModel.DateOfBirth" />
     </div>
     <div>
-        <label for="gender">Gender:</label>
+        <label for="gender">Genre:</label>
         <InputText id="gender" @bind-Value="patientModel.Gender" />
     </div>
     <div>
-        <label for="address">Address:</label>
+        <label for="address">Adresse:</label>
         <InputText id="address" @bind-Value="patientModel.Address" />
     </div>
     <div>
-        <label for="phoneNumber">Phone Number:</label>
+        <label for="phoneNumber">Numéro de téléphone:</label>
         <InputText id="phoneNumber" @bind-Value="patientModel.PhoneNumber" />
     </div>
     <button type="submit">Add Patient</button>
@@ -62,7 +62,7 @@
             {
                 successMessage = "Patient added successfully.";
                 errorMessage = string.Empty;
-                Navigation.NavigateTo("/fetchdata");
+                Navigation.NavigateTo("/");
             }
             else
             {

@@ -7,10 +7,12 @@
 @if (notes == null)
 {
     <p>Loading...</p>
+    <NavLink class="nav-link" href="@($"/addnote/{PatId}")">Ajouter une note</NavLink>
 }
 else if (notes.Length == 0)
 {
     <p>No notes found for Patient ID: @PatId</p>
+    <NavLink class="nav-link" href="@($"/addnote/{PatId}")">Ajouter une note</NavLink>
 }
 else
 {

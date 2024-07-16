@@ -34,6 +34,7 @@ namespace PatientWebApi.Controllers
             {
                 return BadRequest();
             }
+            
             if (await _authService.Login(user))
             {
                 var token = _authService.GenerateTokenString(user);

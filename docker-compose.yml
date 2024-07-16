@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: BlazorApplication/Dockerfile
     ports:
-      - "5000:80"
+      - "5055:80"
  
   patientwebapi:
     image: ${DOCKER_REGISTRY-}patientwebapi
@@ -15,8 +15,8 @@ services:
       context: .
       dockerfile: PatientWebApi/Dockerfile
     environment:
-      - MSSQL_myuserapp_PASSWORD=P@ssw0rd123
-      - ConnectionStrings__DefaultConnection = Server=939358e74247b041e3ab7a058608c681c81820e09460aac4ffcbe51061741e41,1433;Database=PatientDb;User Id=myappuser;Password=P@ssword123;MultipleActiveResultSets=true;TrustServerCertificate=True
+      - MSSQL_SA_PASSWORD=P@ssw0rd123
+      - ConnectionStrings__DefaultConnection=Server=sql-server-db,1433;Database=PatientDb;User Id=SA;Password=P@ssword123;MultipleActiveResultSets=true;TrustServerCertificate=True
     ports:
       - "5001:80"
     depends_on:
@@ -31,6 +31,8 @@ services:
       dockerfile: PatientNoteApi/Dockerfile
     ports:
       - "5002:80"
+    networks:
+      - myapp-network
 
   diabetesriskapi:
     image: ${DOCKER_REGISTRY-}diabetesriskapi
@@ -39,6 +41,11 @@ services:
       dockerfile: DiabetesRiskApi/Dockerfile
     ports:
       - "5003:80"
+    depends_on:
+      - patientwebapi
+      - patientnoteapi
+    networks:
+      - myapp-network
 
   apigateway:
     image: ${DOCKER_REGISTRY-}apigateway
@@ -51,6 +58,8 @@ services:
       - patientwebapi
       - patientnoteapi
       - diabetesriskapi
+    networks:
+      - myapp-network
 
   sql-server-db:
     image: mcr.microsoft.com/mssql/server:latest
@@ -65,6 +74,19 @@ services:
       - db-data:/var/opt/mssql
     container_name: sql-server-db
 
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - myapp-network
+
 networks:
   myapp-network:
     driver: bridge
@@ -72,3 +94,6 @@ networks:
 volumes:
   db-data:
     driver: local
+  mongo-data:
+    driver: local
+
